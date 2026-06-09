@@ -1,7 +1,7 @@
 "use client";
 
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Trash2 } from "lucide-react";
+import { FileText, Trash2 } from "lucide-react";
 import { api } from "@/lib/api";
 import { UploadZone } from "@/components/papers/upload-zone";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -50,36 +50,54 @@ export default function PapersPage() {
         {isLoading &&
           Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-20 w-full rounded-xl" />)}
         {data?.items.map((paper) => (
-          <Card key={paper.id} className={selected.includes(paper.id) ? "ring-1 ring-violet-500" : ""}>
+          <Card key={paper.id} className={selected.includes(paper.id) ? "ring-1 ring-violet-500 bg-zinc-900/40" : "bg-zinc-900/20"}>
             <CardContent className="flex items-center justify-between p-4">
               <div className="flex items-center gap-4">
-                <input
-                  type="checkbox"
-                  checked={selected.includes(paper.id)}
-                  onChange={() => togglePaper(paper.id)}
-                  className="rounded border-zinc-600"
-                />
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-zinc-800 text-zinc-400">
+                  <FileText className="h-5 w-5" />
+                </div>
                 <div>
-                  <p className="font-medium">{paper.title}</p>
-                  <p className="text-xs text-zinc-500">
+                  <p className="font-medium text-zinc-200">{paper.title}</p>
+                  <p className="text-xs text-zinc-500 mt-1">
                     {paper.filename} · {paper.page_count} pages ·{" "}
                     <span
                       className={
                         paper.status === "ready"
-                          ? "text-emerald-400"
+                          ? "text-emerald-400 font-semibold"
                           : paper.status === "failed"
-                            ? "text-red-400"
-                            : "text-amber-400"
+                            ? "text-red-400 font-semibold"
+                            : "text-amber-400 font-semibold animate-pulse"
                       }
                     >
-                      {paper.status}
+                      {paper.status.toUpperCase()}
                     </span>
                   </p>
                 </div>
               </div>
-              <Button variant="ghost" size="sm" onClick={() => remove.mutate(paper.id)}>
-                <Trash2 className="h-4 w-4 text-red-400" />
-              </Button>
+              <div className="flex items-center gap-3">
+                {paper.status === "ready" ? (
+                  <Button
+                    variant={selected.includes(paper.id) ? "default" : "outline"}
+                    size="sm"
+                    onClick={() => togglePaper(paper.id)}
+                    className="h-8 text-xs font-semibold"
+                  >
+                    {selected.includes(paper.id) ? "Selected" : "Select"}
+                  </Button>
+                ) : (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    disabled
+                    className="h-8 text-xs font-semibold text-zinc-600"
+                  >
+                    {paper.status === "failed" ? "Unavailable" : "Processing"}
+                  </Button>
+                )}
+                <Button variant="ghost" size="sm" onClick={() => remove.mutate(paper.id)} className="h-8 w-8 p-0">
+                  <Trash2 className="h-4 w-4 text-zinc-500 hover:text-red-400" />
+                </Button>
+              </div>
             </CardContent>
           </Card>
         ))}

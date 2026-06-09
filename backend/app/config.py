@@ -2,6 +2,7 @@ import json
 from functools import lru_cache
 from pathlib import Path
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -16,6 +17,15 @@ class Settings(BaseSettings):
     )
 
     database_url: str = "postgresql+asyncpg://researchmind:researchmind_secret@localhost:5432/researchmind"
+
+    @field_validator("database_url", mode="before")
+    @classmethod
+    def assemble_db_url(cls, v: str) -> str:
+        if v.startswith("postgres://"):
+            v = v.replace("postgres://", "postgresql+asyncpg://", 1)
+        elif v.startswith("postgresql://") and "+asyncpg" not in v:
+            v = v.replace("postgresql://", "postgresql+asyncpg://", 1)
+        return v
     jwt_secret: str = "change-me"
     jwt_algorithm: str = "HS256"
     access_token_expire_minutes: int = 15
