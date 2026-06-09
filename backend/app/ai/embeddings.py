@@ -14,7 +14,16 @@ class EmbeddingService:
         )
 
     async def embed_documents(self, texts: list[str]) -> list[list[float]]:
-        return await self._client.aembed_documents(texts)
+        import asyncio
+        batch_size = 16
+        all_embeddings = []
+        for i in range(0, len(texts), batch_size):
+            batch = texts[i : i + batch_size]
+            embeddings = await self._client.aembed_documents(batch)
+            all_embeddings.extend(embeddings)
+            if i + batch_size < len(texts):
+                await asyncio.sleep(1.0)  # Pause for 1 second between batches to avoid 429 Quota limits
+        return all_embeddings
 
     async def embed_query(self, text: str) -> list[float]:
         return await self._client.aembed_query(text)

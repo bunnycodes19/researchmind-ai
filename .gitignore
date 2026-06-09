@@ -20,6 +20,7 @@ build/
 # Data
 data/uploads/
 data/faiss/
+backend/data/
 *.faiss
 *.pkl
 
