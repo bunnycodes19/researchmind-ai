@@ -21,12 +21,12 @@ export default function LandingPage() {
           <span className="text-xl font-semibold">ResearchMind AI</span>
         </div>
         <div className="flex gap-3">
-          <Link href="/login">
-            <Button variant="ghost">Log in</Button>
-          </Link>
-          <Link href="/signup">
-            <Button>Get started</Button>
-          </Link>
+          <Button asChild variant="ghost">
+            <Link href="/login">Log in</Link>
+          </Button>
+          <Button asChild>
+            <Link href="/signup">Get started</Link>
+          </Button>
         </div>
       </header>
 
@@ -51,11 +51,11 @@ export default function LandingPage() {
           LangChain, Gemini, and FAISS.
         </motion.p>
         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }} className="mt-10">
-          <Link href="/signup">
-            <Button size="lg" className="gap-2">
+          <Button asChild size="lg" className="gap-2">
+            <Link href="/signup">
               Start free <ArrowRight className="h-4 w-4" />
-            </Button>
-          </Link>
+            </Link>
+          </Button>
         </motion.div>
       </section>
 
